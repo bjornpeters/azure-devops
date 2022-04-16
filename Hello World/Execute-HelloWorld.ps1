@@ -1,1 +1,3 @@
-Write-Host 'Hello World from Azure DevOps'
+Write-Host "##[group]Checking requirements"
+Write-Host "##[command]Executing Hello World"
+Write-Host "##[endgroup]"
