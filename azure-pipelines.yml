@@ -10,5 +10,6 @@ pool: default
 
 steps:
 - task: PowerShell@2
+  displayName: Hello World
   inputs:
     filePath: "$(System.DefaultWorkingDirectory)/Hello World/Execute-HelloWorld.ps1"
