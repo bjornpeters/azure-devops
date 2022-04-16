@@ -6,7 +6,10 @@
 trigger:
 - main
 
-pool: default
+pool:
+  name: default
+  demands:
+  - agent.name -equals bp-azu-do-02
 
 steps:
 - task: PowerShell@2
