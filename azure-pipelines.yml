@@ -3,13 +3,7 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 
-trigger:
-- main
-
-pool:
-  name: default
-  demands:
-  - agent.name -equals bp-azu-do-02
+trigger: none
 
 steps:
 - task: PowerShell@2
