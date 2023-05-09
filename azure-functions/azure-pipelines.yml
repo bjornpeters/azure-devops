@@ -1,0 +1,47 @@
+trigger:
+  - main
+  
+pool:
+  vmImage: ubuntu-latest
+  
+steps:
+- task: AzureResourceManagerTemplateDeployment@3
+  displayName: 'Provision resources in Microsoft Azure'
+  inputs:
+    deploymentScope: 'Resource Group'
+    azureResourceManagerConnection: 'bpdev-functions-sc-01'
+    action: 'Create Or Update Resource Group'
+    resourceGroupName: 'bpdev-azure-functions'
+    location: 'westeurope'
+    templateLocation: 'Linked artifact'
+    csmFile: 'main.bicep'
+    deploymentMode: 'Incremental'
+    deploymentName: 'DeployPipelineTemplate'
+  
+# Now we zip our Azure Functions app files. Don't forget to change the path
+- task: ArchiveFiles@2
+  displayName: 'Zip Azure Function app files'
+  inputs:
+    includeRootFolder: false
+    # Your root folder file is where azure-pipelines.yml is stored
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/bpdev-func-01/'
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/function-$(Build.BuildNumber).zip'
+  
+# Publish the file to Azure Artifacts so it can be retrieved in the next step
+- task: PublishPipelineArtifact@1
+  displayName: 'Publish the artifact'
+  inputs:
+    targetPath: '$(Build.ArtifactStagingDirectory)/function-$(Build.BuildNumber).zip'
+    publishLocation: 'pipeline'
+  
+# Now deploy the file from Azure Artifact to Microsoft Azure
+- task: AzureFunctionApp@1
+  displayName: 'Deploy Azure Functions app'
+  inputs:
+    azureSubscription: 'bpdev-functions-sc-01'
+    appType: functionAppLinux
+    resourceGroupName: 'bpdev-azure-functions'
+    appName: 'function-$(Build.BuildNumber)'
+    package: '$(Build.ArtifactStagingDirectory)/function-$(Build.BuildNumber).zip'
+    deploymentMethod: 'zipDeploy'
