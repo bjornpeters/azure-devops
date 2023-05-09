@@ -1,10 +1,12 @@
 trigger:
   - main
-  
+
+  # We are using a default pool with Linux agents. Windows is fine too.
 pool:
   vmImage: ubuntu-latest
   
 steps:
+# Deploys required resources in Microsft Azure using Azure Bicep
 - task: AzureResourceManagerTemplateDeployment@3
   displayName: 'Provision resources in Microsoft Azure'
   inputs:
