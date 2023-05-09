@@ -1,7 +1,7 @@
 trigger:
   - main
 
-  # We are using a default pool with Linux agents. Windows is fine too.
+# We are using a default pool with Linux agents. Windows is fine too.
 pool:
   vmImage: ubuntu-latest
   
