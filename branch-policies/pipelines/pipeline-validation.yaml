@@ -4,12 +4,16 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
-
+jobs:
+- job: 'psScriptAnalyzer'
+  displayName: PSScriptAnalyzer
+  steps:
+    - task: PowerShell@2
+      displayName: Analyse PowerShell
+      env:
+        SYSTEM_ACCESSTOKEN: $(System.AccessToken)
+      inputs:
+        arguments: '-ScriptDirectory $(Build.Repository.LocalPath)/branch-policies/deploymentFiles'
+        filePath: $(Build.Repository.LocalPath)/branch-policies/supportFiles/validation-psscriptanalyzer.ps1
+        pwsh: true
+        targetType: filepath
